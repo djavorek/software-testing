@@ -42,7 +42,7 @@ public class BorrowingDaoJdbc implements BorrowingDao {
         return namedParameterJdbcTemplate.batchUpdate(INSERT, params);}
 
     @Override
-    public Borrowing read(String borrowId) {
+    public Borrowing read(int borrowId) {
         SqlParameterSource namedParameters = new MapSqlParameterSource().addValue("borrowId", borrowId);
         return namedParameterJdbcTemplate.queryForObject(SELECT_BY_ID, namedParameters, rowMapper);}
 
@@ -61,7 +61,7 @@ public class BorrowingDaoJdbc implements BorrowingDao {
     public int delete(Borrowing borrowing) {return namedParameterJdbcTemplate.update(DELETE_BY_ID, getSqlParameterSource(borrowing));}
 
     @Override
-    public int delete(String borrowId) {return namedParameterJdbcTemplate.update(DELETE_BY_ID, new MapSqlParameterSource().addValue("borrowId", borrowId));}
+    public int delete(int borrowId) {return namedParameterJdbcTemplate.update(DELETE_BY_ID, new MapSqlParameterSource().addValue("borrowId", borrowId));}
 
     @Override
     public int[] delete(List<Borrowing> borrowings) {
