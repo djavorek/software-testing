@@ -1,5 +1,18 @@
 language: java
 sudo: false # faster builds
-before_install: cd bundle
-script: mvn clean verify jacoco:report
-after_success: mvn coveralls:report
+addons:
+  apt:
+    packages:
+    - sshpass
+  ssh_known_hosts:
+  - eversea.org
+
+before_script:
+- sshpass -p $dbPassword ssh -fN -L 3306:localhost:3306 gwerty@eversea.org #SSH Tunnel
+- cd bundle
+
+script:
+- mvn clean verify jacoco:report
+
+after_success:
+- mvn coveralls:report
