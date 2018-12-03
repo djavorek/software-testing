@@ -25,7 +25,7 @@ public class BookDaoJdbcTest {
 
     @Test
     public void readByIsbnTest() {
-        final String isbn = "9780156027601";
+        final String isbn = "0345391802";
         Book book = bookDao.read(isbn);
         Assert.assertEquals(isbn, book.getIsbn());
     }
