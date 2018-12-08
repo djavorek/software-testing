@@ -121,6 +121,14 @@ public class LibrarianServiceImplTest {
 
         librarianServiceImpl.addBook(newBook);
         verify(testBookDao).create(newBook);
+
     }
- 
+
+    @Test
+    public void addBookInstance () {
+        when(testBookDao.read(testBook.getIsbn())).thenReturn(testBook);
+
+        librarianServiceImpl.addBookInstance(testBook);
+        verify(testBookDao).read(testBook.getIsbn());
+    }
 }
