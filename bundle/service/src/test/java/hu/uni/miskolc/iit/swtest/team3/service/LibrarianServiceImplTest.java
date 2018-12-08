@@ -18,6 +18,9 @@ import org.junit.Assert;
 import org.mockito.Mockito;
 import org.springframework.dao.DataAccessException;
 
+import javax.naming.InitialContext;
+import javax.xml.crypto.Data;
+
 import static org.mockito.Mockito.*;
 
 public class LibrarianServiceImplTest {
@@ -125,8 +128,16 @@ public class LibrarianServiceImplTest {
     }
 
     @Test
-    public void addBookInstance () {
+    public void testAddBookInstance () {
         when(testBookDao.read(testBook.getIsbn())).thenReturn(testBook);
+
+        librarianServiceImpl.addBookInstance(testBook);
+        verify(testBookDao).read(testBook.getIsbn());
+    }
+
+    @Test(expected = UnsuccessfulOperationException.class)
+    public void testAddBookInstanceException () {
+        Mockito.when(testBookDao.read(testBook.getIsbn())).thenThrow(Mockito.mock(DataAccessException.class));
 
         librarianServiceImpl.addBookInstance(testBook);
         verify(testBookDao).read(testBook.getIsbn());
