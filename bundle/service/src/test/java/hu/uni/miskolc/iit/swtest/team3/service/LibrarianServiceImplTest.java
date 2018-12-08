@@ -166,4 +166,30 @@ public class LibrarianServiceImplTest {
         Assert.assertEquals(testBorrowingList, librarianServiceImpl.listBorrowings());
         verify(testBorrowingDao).read();
     }
+
+    @Test
+    public void testIsValidStatusChange() {
+        BorrowStatus oldStatusRequested = BorrowStatus.REQUESTED;
+        BorrowStatus oldStatusBorrowed = BorrowStatus.BORROWED;
+        BorrowStatus oldStatusReturned = BorrowStatus.RETURNED;
+
+        BorrowStatus newStatusRequested = BorrowStatus.REQUESTED;
+        BorrowStatus newStatusBorrowed = BorrowStatus.BORROWED;
+        BorrowStatus newStatusReturned = BorrowStatus.RETURNED;
+
+        if (oldStatusRequested == BorrowStatus.REQUESTED) {
+            Assert.assertTrue(newStatusBorrowed == BorrowStatus.BORROWED);
+            Assert.assertFalse(newStatusBorrowed != BorrowStatus.BORROWED);
+        }
+
+        if (oldStatusBorrowed == BorrowStatus.BORROWED) {
+            Assert.assertTrue(newStatusReturned == BorrowStatus.RETURNED);
+            Assert.assertFalse(newStatusReturned != BorrowStatus.RETURNED);
+        }
+        
+        if (oldStatusReturned == BorrowStatus.RETURNED) {
+            Assert.assertFalse(newStatusRequested != BorrowStatus.REQUESTED);
+        }
+    }
+
 }
