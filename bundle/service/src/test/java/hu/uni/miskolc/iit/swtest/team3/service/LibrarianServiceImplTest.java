@@ -35,6 +35,7 @@ public class LibrarianServiceImplTest {
 
     private List<Borrowing> testBorrowingList = new ArrayList<>();
     private Borrowing testBorrowing = new Borrowing();
+    private Borrowing testBorrowing2 = new Borrowing();
     private static final GregorianCalendar TEST_CREATIONDATE = new GregorianCalendar();
     private User testUser = new User();
     private Book newBook = new Book();
@@ -60,7 +61,14 @@ public class LibrarianServiceImplTest {
         testBorrowing.setBookIsbn("811326746-8");
         testBorrowing.setCreationDate(TEST_CREATIONDATE);
 
+        testBorrowing2.setBorrowId(2);
+        testBorrowing2.setStatus(BorrowStatus.REQUESTED);
+        testBorrowing2.setCreatorId(66);
+        testBorrowing2.setBookIsbn("811326746-8");
+        testBorrowing2.setCreationDate(TEST_CREATIONDATE);
+
         testBorrowingList.add(testBorrowing);
+        testBorrowingList.add(testBorrowing2);
 
         testUser.setUserId(66);
         testUser.setPasswordHash("$2a$frtF_$dasgew");
@@ -159,12 +167,20 @@ public class LibrarianServiceImplTest {
         verify(testBorrowingDao).read();
     }
 
+    @Test(expected = UnsuccessfulOperationException.class)
+    public void testListRequestException() {
+        Mockito.when(testBorrowingDao.read()).thenThrow(Mockito.mock(DataAccessException.class));
+
+        librarianServiceImpl.listRequests();
+    }
+
     @Test(expected = IllegalStateException.class)
     public void testManageRequestsIllegalException() {
         when(testBorrowingDao.read(testBorrowing.getBorrowId())).thenReturn(testBorrowing);
 
         librarianServiceImpl.manageRequest(testBorrowing);
     }
+
     @Test(expected = UnsuccessfulOperationException.class)
     public void testManageRequestsException() {
         Mockito.when(testBorrowingDao.read(testBorrowing.getBorrowId())).thenThrow(Mockito.mock(DataAccessException.class));
@@ -172,38 +188,30 @@ public class LibrarianServiceImplTest {
         librarianServiceImpl.manageRequest(testBorrowing);
     }
 
-    @Test(expected = UnsuccessfulOperationException.class)
-    public void testListRequestException() {
-        Mockito.when(testBorrowingDao.read()).thenThrow(Mockito.mock(DataAccessException.class));
-
-        Assert.assertEquals(testBorrowingList, librarianServiceImpl.listBorrowings());
-        verify(testBorrowingDao).read();
-    }
-
     @Test
     public void testIsValidStatusChange() {
         BorrowStatus newStatusRequested = BorrowStatus.REQUESTED;
         BorrowStatus newStatusBorrowed = BorrowStatus.BORROWED;
         BorrowStatus newStatusReturned = BorrowStatus.RETURNED;
-        
+
         BorrowStatus oldStatusRequested = BorrowStatus.REQUESTED;
         BorrowStatus oldStatusBorrowed = BorrowStatus.BORROWED;
         BorrowStatus oldStatusReturned = BorrowStatus.RETURNED;
-        
+
         BorrowStatus oldStatusFalse = null;
 
         librarianServiceImpl.isValidStatusChange(oldStatusRequested, newStatusRequested);
         librarianServiceImpl.isValidStatusChange(oldStatusBorrowed, newStatusBorrowed);
         librarianServiceImpl.isValidStatusChange(oldStatusReturned, newStatusReturned);
-        
+
         librarianServiceImpl.isValidStatusChange(oldStatusFalse, newStatusReturned);
     }
-    
+
     @Test
-    public void testUpdateAvailableCopies(){
+    public void testUpdateAvailableCopies() {
         BorrowStatus statusBorrowed = BorrowStatus.BORROWED;
         BorrowStatus statusReturned = BorrowStatus.RETURNED;
-                
+
         librarianServiceImpl.updateAvailableCopies(statusBorrowed, testBook);
         librarianServiceImpl.updateAvailableCopies(statusReturned, testBook);
     }
