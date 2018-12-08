@@ -106,7 +106,7 @@ public class LibrarianServiceImpl implements LibrarianService {
                 borrowingToUpdate.setStatus(newStatus);
 
                 Book managedBook = bookDao.read(borrowingToUpdate.getBookIsbn());
-                updateAvailableCopies(oldStatus, newStatus, managedBook);
+                updateAvailableCopies(newStatus, managedBook);
 
                 borrowingDao.update(borrowingToUpdate);
                 bookDao.update(managedBook);
@@ -116,7 +116,7 @@ public class LibrarianServiceImpl implements LibrarianService {
         }
     }
 
-    private boolean isValidStatusChange(BorrowStatus oldStatus, BorrowStatus newStatus) {
+    public boolean isValidStatusChange(BorrowStatus oldStatus, BorrowStatus newStatus) {
         switch(oldStatus) {
             case REQUESTED: {
                 if(newStatus == BorrowStatus.BORROWED) return true;
@@ -133,7 +133,7 @@ public class LibrarianServiceImpl implements LibrarianService {
         return false;
     }
 
-    private void updateAvailableCopies(BorrowStatus oldStatus, BorrowStatus newStatus, Book bookToManage) {
+    public void updateAvailableCopies(BorrowStatus newStatus, Book bookToManage) {
         int availableCopiesBefore = bookToManage.getAvailableCopies();
 
         switch(newStatus) {

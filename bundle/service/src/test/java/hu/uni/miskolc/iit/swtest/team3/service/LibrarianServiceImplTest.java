@@ -172,47 +172,15 @@ public class LibrarianServiceImplTest {
         BorrowStatus newStatus = testBorrowing.getStatus();
         
         BorrowStatus oldStatus = BorrowStatus.REQUESTED;
-        
-        switch(oldStatus) {
-            case REQUESTED: {
-                if(newStatus == BorrowStatus.BORROWED){
-                    Assert.assertTrue(true);
-                }
-                else {
-                    Assert.assertFalse(false);
-                }
-            }
-            case BORROWED: {
-                if(newStatus == BorrowStatus.RETURNED){
-                    Assert.assertTrue(true);
-                }
-                else {
-                    Assert.assertFalse(false);
-                }
-            }
-            case RETURNED: {
-                Assert.assertFalse(false);
-            }
-        }
-        Assert.assertFalse(false);
+
+        librarianServiceImpl.isValidStatusChange(oldStatus, newStatus);
     }
     
     @Test
     public void testUpdateAvailableCopies(){
-        int availableCopiesBefore = testBook.getAvailableCopies();
-
         BorrowStatus newStatus = testBorrowing.getStatus();
 
-        switch(newStatus) {
-            case BORROWED: {
-                testBook.setAvailableCopies(availableCopiesBefore--);
-                break;
-            }
-            case RETURNED: {
-                testBook.setAvailableCopies(availableCopiesBefore++);
-                break;
-            }
-        }
+        librarianServiceImpl.updateAvailableCopies(newStatus, testBook);
     }
 
 }
