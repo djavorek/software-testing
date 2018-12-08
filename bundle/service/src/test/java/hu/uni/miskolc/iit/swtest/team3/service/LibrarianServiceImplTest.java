@@ -109,6 +109,11 @@ public class LibrarianServiceImplTest {
 
     @Test
     public void testAddBook() {
-        when(testBookDao.create(newBook)).thenReturn(testBorrowingList.add(newBook)); //Here's the problem
+        int added = 1;
+        int checked = doReturn(added + 1).when(testBookDao).create(newBook);
+        if(checked == 2) {
+            testBookList.add(newBook);
+        }
+
     }
 }
