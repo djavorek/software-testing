@@ -104,16 +104,11 @@ public class LibrarianServiceImplTest {
         Mockito.when(testBorrowingDao.read()).thenThrow(Mockito.mock(DataAccessException.class));
 
         Assert.assertEquals(testBorrowingList, librarianServiceImpl.listBorrowings());
-        verify(testBorrowingDao).readByUser(testUser);
+        verify(testBorrowingDao.read());
     }
 
     @Test
     public void testAddBook() {
-        int added = 1;
-        int checked = doReturn(added + 1).when(testBookDao).create(newBook);
-        if(checked == 2) {
-            testBookList.add(newBook);
-        }
-
+        doReturn(testBookList.add(newBook)).when(testBookDao).create(newBook);
     }
 }
