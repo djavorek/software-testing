@@ -165,6 +165,16 @@ public class LibrarianServiceImplTest {
 
         librarianServiceImpl.manageRequest(testBorrowing);
     }
+
+    @Test
+    public void testManageRequestsElseCase() {
+        Borrowing borrowingToUpdate = testBorrowingDao.read(testBorrowing.getBorrowId());
+        BorrowStatus newStatus = testBorrowing.getStatus();
+
+        doReturn(testBorrowing).when(testBookDao.read(borrowingToUpdate.getBookIsbn()));
+
+        librarianServiceImpl.manageRequest(testBorrowing);
+    }
     @Test(expected = UnsuccessfulOperationException.class)
     public void testManageRequestsException() {
         Mockito.when(testBorrowingDao.read(testBorrowing.getBorrowId())).thenThrow(Mockito.mock(DataAccessException.class));
