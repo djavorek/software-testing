@@ -165,6 +165,12 @@ public class LibrarianServiceImplTest {
 
         librarianServiceImpl.manageRequest(testBorrowing);
     }
+    @Test(expected = UnsuccessfulOperationException.class)
+    public void testManageRequestsException() {
+        Mockito.when(testBorrowingDao.read(testBorrowing.getBorrowId())).thenThrow(Mockito.mock(DataAccessException.class));
+
+        librarianServiceImpl.manageRequest(testBorrowing);
+    }
 
     @Test(expected = UnsuccessfulOperationException.class)
     public void testListRequestException() {
