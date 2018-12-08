@@ -1,3 +1,5 @@
+---------------- BOOK ----------------------
+
 DROP TABLE IF EXISTS `book`;
 CREATE TABLE IF NOT EXISTS `book` (
   `isbn` varchar(100) PRIMARY KEY NOT NULL,
@@ -13,6 +15,8 @@ INSERT INTO `book` (`isbn`, `author`, `title`, `description`, `language`, `avail
 	('0345391802', 'Douglas Adams', 'The Hitchhikers Guide to the Galaxy', 'description', 'English', 42),
 	('9780345391803', 'George Orwell', '1984', 'The Party told you to reject the evidence of your eyes and ears. It was their final, most essential command.', 'English', 5);
 
+---------------- USER ----------------------
+
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user` (
   `userId` int(12) unsigned NOT NULL AUTO_INCREMENT,
@@ -26,6 +30,8 @@ CREATE TABLE IF NOT EXISTS `user` (
 DELETE FROM `user`;
 INSERT INTO `user` (`userId`, `name`, `email`, `passwordHash`, `librarian`) VALUES
 	(1, 'Test Thomas', 'test@donotreply.dont', '#22fdfsd', 1);
+
+---------------- BORROWING ----------------------
 
 DROP TABLE IF EXISTS `borrowings`;
 CREATE TABLE IF NOT EXISTS `borrowings` (
