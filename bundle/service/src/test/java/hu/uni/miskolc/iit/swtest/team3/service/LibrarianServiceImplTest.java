@@ -165,20 +165,6 @@ public class LibrarianServiceImplTest {
 
         librarianServiceImpl.manageRequest(testBorrowing);
     }
-
-    //This test has to be finished for 100% coverage ASAP!!
-    @Test
-    public void testManageRequestExceptionElseCase() {
-        Borrowing borrowingToUpdate = testBorrowingDao.read(testBorrowing.getBorrowId());
-        BorrowStatus newStatus = testBorrowing.getStatus();
-        borrowingToUpdate.setStatus(newStatus);
-        Book managedBook = testBookDao.read(borrowingToUpdate.getBookIsbn());
-
-        doReturn(testBorrowing).when(testBookDao.update(managedBook));
-
-        librarianServiceImpl.manageRequest(testBorrowing);
-    }
-
     @Test(expected = UnsuccessfulOperationException.class)
     public void testManageRequestsException() {
         Mockito.when(testBorrowingDao.read(testBorrowing.getBorrowId())).thenThrow(Mockito.mock(DataAccessException.class));
