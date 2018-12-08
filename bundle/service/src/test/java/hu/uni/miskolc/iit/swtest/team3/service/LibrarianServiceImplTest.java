@@ -171,16 +171,22 @@ public class LibrarianServiceImplTest {
     public void testIsValidStatusChange() {
         BorrowStatus newStatus = testBorrowing.getStatus();
         
-        BorrowStatus oldStatus = BorrowStatus.REQUESTED;
+        BorrowStatus oldStatusRequested = BorrowStatus.REQUESTED;
+        BorrowStatus oldStatusBorrowed = BorrowStatus.BORROWED;
+        BorrowStatus oldStatusReturned = BorrowStatus.RETURNED;
 
-        librarianServiceImpl.isValidStatusChange(oldStatus, newStatus);
+        librarianServiceImpl.isValidStatusChange(oldStatusRequested, newStatus);
+        librarianServiceImpl.isValidStatusChange(oldStatusBorrowed, newStatus);
+        librarianServiceImpl.isValidStatusChange(oldStatusReturned, newStatus);
     }
     
     @Test
     public void testUpdateAvailableCopies(){
-        BorrowStatus newStatus = testBorrowing.getStatus();
-
-        librarianServiceImpl.updateAvailableCopies(newStatus, testBook);
+        BorrowStatus statusBorrowed = BorrowStatus.BORROWED;
+        BorrowStatus statusReturned = BorrowStatus.RETURNED;
+                
+        librarianServiceImpl.updateAvailableCopies(statusBorrowed, testBook);
+        librarianServiceImpl.updateAvailableCopies(statusReturned, testBook);
     }
 
 }
