@@ -1,5 +1,5 @@
 language: java
 sudo: false # faster builds
 before_script: cd bundle
-script: mvn clean verify jacoco:report
+script: mvn -fn clean verify jacoco:report # fn: Ignore test errors until the end of the build
 after_script: mvn coveralls:report # Sending jacoco report
