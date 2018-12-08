@@ -88,7 +88,7 @@ public class LibrarianServiceImplTest {
         Mockito.when(testBookDao.read()).thenThrow(Mockito.mock(DataAccessException.class));
 
         Assert.assertEquals(testBookList, librarianServiceImpl.listBooks());
-        verify(testBookDao.create(newBook));
+        verify(testBookDao).create(newBook);
     }
 
     @Test
@@ -96,7 +96,7 @@ public class LibrarianServiceImplTest {
         when(testBorrowingDao.read()).thenReturn(testBorrowingList);
 
         Assert.assertEquals(testBorrowingList, librarianServiceImpl.listBorrowings());
-        verify(testBorrowingDao);
+        verify(testBorrowingDao).read();
     }
 
     @Test(expected = UnsuccessfulOperationException.class)
@@ -104,11 +104,23 @@ public class LibrarianServiceImplTest {
         Mockito.when(testBorrowingDao.read()).thenThrow(Mockito.mock(DataAccessException.class));
 
         Assert.assertEquals(testBorrowingList, librarianServiceImpl.listBorrowings());
-        verify(testBorrowingDao.read());
+        verify(testBorrowingDao).read();
     }
 
     @Test
     public void testAddBook() {
         doReturn(testBookList.add(newBook)).when(testBookDao).create(newBook);
+
+        librarianServiceImpl.addBook(newBook);
+        verify(testBookDao).create(newBook);
     }
+
+    @Test(expected = UnsuccessfulOperationException.class)
+    public void testAddBookException() {
+        Mockito.when(testBookDao.create(newBook)).thenThrow(Mockito.mock(DataAccessException.class));
+
+        librarianServiceImpl.addBook(newBook);
+        verify(testBookDao).create(newBook);
+    }
+ 
 }
