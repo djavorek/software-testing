@@ -159,6 +159,14 @@ public class LibrarianServiceImplTest {
         verify(testBorrowingDao).read();
     }
 
+    @Test
+    public void testManageRequests() {
+        BorrowStatus oldStatus;
+        BorrowStatus newStatus;
+
+        when(testBorrowingDao.read(testBorrowing.getBorrowId())).thenReturn(testBorrowing);
+    }
+
     @Test(expected = UnsuccessfulOperationException.class)
     public void testListRequestException() {
         Mockito.when(testBorrowingDao.read()).thenThrow(Mockito.mock(DataAccessException.class));
@@ -188,5 +196,4 @@ public class LibrarianServiceImplTest {
         librarianServiceImpl.updateAvailableCopies(statusBorrowed, testBook);
         librarianServiceImpl.updateAvailableCopies(statusReturned, testBook);
     }
-
 }
