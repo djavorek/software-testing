@@ -1,5 +1,5 @@
 language: java
 sudo: false # faster builds
 before_script: cd bundle
-script: mvn -fn clean verify jacoco:report # fn: Ignore test errors until the end of the build
+script: mvn -Dmaven.test.failure.ignore=true clean verify jacoco:report
 after_script: mvn coveralls:report # Sending jacoco report
