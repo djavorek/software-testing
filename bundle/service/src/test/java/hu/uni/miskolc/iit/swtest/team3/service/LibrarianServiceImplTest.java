@@ -169,26 +169,49 @@ public class LibrarianServiceImplTest {
 
     @Test
     public void testIsValidStatusChange() {
-        BorrowStatus oldStatusRequested = BorrowStatus.REQUESTED;
-        BorrowStatus oldStatusBorrowed = BorrowStatus.BORROWED;
-        BorrowStatus oldStatusReturned = BorrowStatus.RETURNED;
-
-        BorrowStatus newStatusRequested = BorrowStatus.REQUESTED;
-        BorrowStatus newStatusBorrowed = BorrowStatus.BORROWED;
-        BorrowStatus newStatusReturned = BorrowStatus.RETURNED;
-
-        if (oldStatusRequested == BorrowStatus.REQUESTED) {
-            Assert.assertTrue(newStatusBorrowed == BorrowStatus.BORROWED);
-            Assert.assertFalse(newStatusBorrowed != BorrowStatus.BORROWED);
-        }
-
-        if (oldStatusBorrowed == BorrowStatus.BORROWED) {
-            Assert.assertTrue(newStatusReturned == BorrowStatus.RETURNED);
-            Assert.assertFalse(newStatusReturned != BorrowStatus.RETURNED);
-        }
+        BorrowStatus newStatus = testBorrowing.getStatus();
         
-        if (oldStatusReturned == BorrowStatus.RETURNED) {
-            Assert.assertFalse(newStatusRequested != BorrowStatus.REQUESTED);
+        BorrowStatus oldStatus = BorrowStatus.REQUESTED;
+        
+        switch(oldStatus) {
+            case REQUESTED: {
+                if(newStatus == BorrowStatus.BORROWED){
+                    Assert.assertTrue(true);
+                }
+                else {
+                    Assert.assertFalse(false);
+                }
+            }
+            case BORROWED: {
+                if(newStatus == BorrowStatus.RETURNED){
+                    Assert.assertTrue(true);
+                }
+                else {
+                    Assert.assertFalse(false);
+                }
+            }
+            case RETURNED: {
+                Assert.assertFalse(false);
+            }
+        }
+        Assert.assertFalse(false);
+    }
+    
+    @Test
+    public void testUpdateAvailableCopies(){
+        int availableCopiesBefore = testBook.getAvailableCopies();
+
+        BorrowStatus newStatus = testBorrowing.getStatus();
+
+        switch(newStatus) {
+            case BORROWED: {
+                testBook.setAvailableCopies(availableCopiesBefore--);
+                break;
+            }
+            case RETURNED: {
+                testBook.setAvailableCopies(availableCopiesBefore++);
+                break;
+            }
         }
     }
 
