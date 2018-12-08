@@ -159,12 +159,11 @@ public class LibrarianServiceImplTest {
         verify(testBorrowingDao).read();
     }
 
-    @Test
-    public void testManageRequests() {
-        BorrowStatus oldStatus;
-        BorrowStatus newStatus;
-
+    @Test(expected = IllegalStateException.class)
+    public void testManageRequestsIllegalException() {
         when(testBorrowingDao.read(testBorrowing.getBorrowId())).thenReturn(testBorrowing);
+
+        librarianServiceImpl.manageRequest(testBorrowing);
     }
 
     @Test(expected = UnsuccessfulOperationException.class)
