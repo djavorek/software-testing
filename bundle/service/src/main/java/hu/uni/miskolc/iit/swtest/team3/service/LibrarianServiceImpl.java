@@ -118,18 +118,12 @@ public class LibrarianServiceImpl implements LibrarianService {
         if (oldStatus != null && newStatus != null) {
             switch (oldStatus) {
                 case REQUESTED: {
-                    if (newStatus == BorrowStatus.BORROWED) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    if (newStatus == BorrowStatus.BORROWED) return true;
+                    else return false;
                 }
                 case BORROWED: {
-                    if (newStatus == BorrowStatus.RETURNED) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    if (newStatus == BorrowStatus.RETURNED) return true;
+                    else return false;
                 }
                 case RETURNED: {
                     return false;
