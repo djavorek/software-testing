@@ -2,6 +2,7 @@ package hu.uni.miskolc.iit.swtest.team3.dao;
 
 import hu.uni.miskolc.iit.swtest.team3.model.Book;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -36,8 +37,14 @@ public class BookDaoJdbc implements BookDao {
     }
 
     @Override
-    public int create(Book book) {
-        return namedParameterJdbcTemplate.update(INSERT, getSqlParameterSource(book));
+    public boolean create(Book book) {
+        try {
+            namedParameterJdbcTemplate.update(INSERT, getSqlParameterSource(book));
+            return true;
+        }
+        catch (EmptyResultDataAccessException e) {
+            return false;
+        }
     }
 
     @Override

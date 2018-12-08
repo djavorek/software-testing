@@ -88,7 +88,7 @@ public class LibrarianServiceImplTest {
         Mockito.when(testBookDao.read()).thenThrow(Mockito.mock(DataAccessException.class));
 
         Assert.assertEquals(testBookList, librarianServiceImpl.listBooks());
-        verify(testBookDao).read();
+        verify(testBookDao.create(newBook));
     }
 
     @Test
