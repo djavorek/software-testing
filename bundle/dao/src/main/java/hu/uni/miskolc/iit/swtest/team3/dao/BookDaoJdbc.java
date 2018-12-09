@@ -16,23 +16,20 @@ import java.util.List;
 @Repository
 public class BookDaoJdbc implements BookDao {
 
-    private static final String SELECT = "SELECT * FROM books";
-    private static final String SELECT_BY_ID = "SELECT * FROM books WHERE isbn = :isbn";
-    private static final String INSERT = "INSERT INTO books (isbn, author, title, description, language, availableCopies) values (:isbn, :author, :title, :description, :language, :availableCopies)";
-    private static final String UPDATE_BY_ID = "UPDATE books SET isbn=:isbn, author=:author, title=:title, description=:description, language=:language, availableCopies=:availableCopies WHERE isbn=:isbn";
-    private static final String DELETE_BY_ID = "DELETE FROM books WHERE isbn=:isbn";
+    private static final String SELECT = "SELECT * FROM book";
+    private static final String SELECT_BY_ID = "SELECT * FROM book WHERE isbn = :isbn";
+    private static final String INSERT = "INSERT INTO book (isbn, author, title, description, language, availableCopies) values (:isbn, :author, :title, :description, :language, :availableCopies)";
+    private static final String UPDATE_BY_ID = "UPDATE book SET isbn=:isbn, author=:author, title=:title, description=:description, language=:language, availableCopies=:availableCopies WHERE isbn=:isbn";
+    private static final String DELETE_BY_ID = "DELETE FROM book WHERE isbn=:isbn";
+
+    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final RowMapper<Book> rowMapper;
 
     @Autowired
-    JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    final
-    RowMapper<Book> rowMapper;
-
-    @Autowired
-    public BookDaoJdbc(RowMapper<Book> rowMapper) {
+    public BookDaoJdbc(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate, RowMapper<Book> rowMapper) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.rowMapper = rowMapper;
     }
 

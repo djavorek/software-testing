@@ -2,24 +2,21 @@ package hu.uni.miskolc.iit.swtest.team3.dao.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import javax.sql.DataSource;
 
-@Configuration
 @ComponentScan("hu.uni.miskolc.iit.swtest.team3.dao")
-public class SpringDaoConfig {
+public class SpringDaoTestConfig {
 
     @Bean
-    public DataSource mariaDbDataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("org.mariadb.jdbc.Driver");
-        dataSource.setUrl("jdbc:mariadb://localhost:3306/softwaretesting");
-        dataSource.setUsername("root");
-        dataSource.setPassword("");
-        return dataSource;
+    public DataSource dataSource() {
+        return new EmbeddedDatabaseBuilder()
+                .setType(EmbeddedDatabaseType.H2)
+                .addScript("classpath:testData.sql")
+                .build();
     }
 
     @Bean
@@ -31,5 +28,4 @@ public class SpringDaoConfig {
     public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate(final DataSource dataSource) {
         return new NamedParameterJdbcTemplate(dataSource);
     }
-
 }

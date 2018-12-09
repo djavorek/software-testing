@@ -94,8 +94,10 @@ public class Book {
                 Objects.equals(getLanguage(), book.getLanguage()) &&
                 getAvailableCopies() == book.getAvailableCopies();
     }
+
     @Override
     public int hashCode() {
         return Objects.hash(getIsbn(), getAuthor(), getTitle(), getDescription(), getLanguage(), getAvailableCopies());
     }
+
 }
