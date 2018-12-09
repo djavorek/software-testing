@@ -29,7 +29,8 @@ CREATE TABLE IF NOT EXISTS `user` (
 
 DELETE FROM `user`;
 INSERT INTO `user` (`userId`, `name`, `email`, `passwordHash`, `librarian`) VALUES
-	(1, 'Test Thomas', 'test@donotreply.dont', '#22fdfsd', 1);
+	(1, 'Test Thomas', 'test@donotreply.dont', '#22fdfsd', 0),
+	(2, 'Sepia Sophia', 'sep.sop@notaplace.web', '#43fsdfsd', 0);
 
 ---------------- BORROWING ----------------------
 
@@ -46,5 +47,3 @@ CREATE TABLE IF NOT EXISTS `borrowings` (
 ) AUTO_INCREMENT=2;
 
 DELETE FROM `borrowings`;
-INSERT INTO `borrowings` (`borrowId`, `status`, `creatorId`, `bookIsbn`, `creationDate`) VALUES
-	(1, 'requested', 1, '0345391802', '2018-11-23');

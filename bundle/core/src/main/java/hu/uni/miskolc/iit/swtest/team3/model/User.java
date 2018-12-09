@@ -2,6 +2,8 @@ package hu.uni.miskolc.iit.swtest.team3.model;
 
 import org.apache.commons.validator.routines.EmailValidator;
 
+import java.util.Objects;
+
 public class User {
 
     private static final EmailValidator EMAIL_VALIDATOR = EmailValidator.getInstance();
@@ -71,5 +73,22 @@ public class User {
 
     public void setLibrarian(Boolean librarian) {
         this.librarian = librarian;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return getUserId() == user.getUserId() &&
+                Objects.equals(getPasswordHash(), user.getPasswordHash()) &&
+                Objects.equals(getName(), user.getName()) &&
+                Objects.equals(getEmail(), user.getEmail()) &&
+                Objects.equals(librarian, user.librarian);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUserId(), getPasswordHash(), getName(), getEmail(), librarian);
     }
 }

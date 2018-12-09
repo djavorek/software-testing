@@ -56,11 +56,8 @@ public class BookDaoJdbcTest {
 
         bookDao.create(bookListToTest);
         Assert.assertThat(bookDao.read(), hasItems(creepyBook, adventureBook));
-        bookListToTest.clear();
 
         creepyBook.setAvailableCopies(150);
-        bookListToTest.add(creepyBook);
-        bookListToTest.add(adventureBook);
         bookDao.update(bookListToTest);
         Assert.assertThat(bookDao.read(), hasItems(creepyBook, adventureBook));
 

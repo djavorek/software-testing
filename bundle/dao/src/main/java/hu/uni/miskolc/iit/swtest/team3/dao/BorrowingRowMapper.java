@@ -17,7 +17,7 @@ public class BorrowingRowMapper implements RowMapper<Borrowing> {
         Borrowing borrowing = new Borrowing();
 
         borrowing.setBorrowId(resultSet.getInt("borrowId"));
-        borrowing.setStatus(BorrowStatus.valueOf(resultSet.getString("status")));
+        borrowing.setStatus(BorrowStatus.valueOf(resultSet.getString("status").toUpperCase()));
         borrowing.setCreatorId(resultSet.getInt("creatorId"));
         borrowing.setBookIsbn(resultSet.getString("bookIsbn"));
 

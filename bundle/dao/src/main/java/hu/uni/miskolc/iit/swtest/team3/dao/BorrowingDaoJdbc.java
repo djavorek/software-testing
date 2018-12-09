@@ -6,12 +6,10 @@ import hu.uni.miskolc.iit.swtest.team3.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
+import org.springframework.jdbc.core.namedparam.*;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Types;
 import java.util.List;
 
 @Repository
@@ -21,7 +19,7 @@ public class BorrowingDaoJdbc implements BorrowingDao {
     private static final String SELECT_BY_ID = "SELECT * FROM borrowings WHERE borrowId = :borrowId";
     private static final String SELECT_BY_USER = "SELECT * FROM borrowings WHERE creatorId = :creatorId";
     private static final String SELECT_BY_BOOK ="SELECT * FROM borrowings WHERE bookIsbn = :bookIsbn";
-    private static final String INSERT = "INSERT INTO borrowings(status, creatorId, bookIsbn, creationDate) values (:status, :creatorId, :bookIsbn, :creationDate)";
+    private static final String INSERT = "INSERT INTO borrowings(borrowId, status, creatorId, bookIsbn, creationDate) values (:borrowId, :status, :creatorId, :bookIsbn, :creationDate)";
     private static final String UPDATE_BY_ID = "UPDATE borrowings SET borrowId=:borrowId, status=:status, creatorId=:creatorId, bookIsbn=:bookIsbn, creationDate=:creationDate WHERE borrowId=:borrowId";
     private static final String DELETE_BY_ID = "DELETE FROM borrowings WHERE borrowId=:borrowId";
 
@@ -45,7 +43,14 @@ public class BorrowingDaoJdbc implements BorrowingDao {
 
     @Override
     public int[] create(List<Borrowing> borrowings) {
-        SqlParameterSource[] params = SqlParameterSourceUtils.createBatch(borrowings.toArray());
+        SqlParameterSource[] params = new SqlParameterSource[borrowings.size()];
+
+        for (int i = 0; i < borrowings.size(); i++) {
+            BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(borrowings.get(i));
+            parameterSource.registerSqlType("status", Types.VARCHAR);
+            params[i] = parameterSource;
+        }
+
         return namedParameterJdbcTemplate.batchUpdate(INSERT, params);
     }
 
@@ -69,7 +74,7 @@ public class BorrowingDaoJdbc implements BorrowingDao {
     @Override
     public List<Borrowing> readByUser(User creator) {
         SqlParameterSource namedParameters = new MapSqlParameterSource().addValue("creatorId", creator.getUserId());
-        return namedParameterJdbcTemplate.query(SELECT_BY_ID, namedParameters, rowMapper);
+        return namedParameterJdbcTemplate.query(SELECT_BY_USER, namedParameters, rowMapper);
     }
 
     @Override
@@ -78,8 +83,15 @@ public class BorrowingDaoJdbc implements BorrowingDao {
     }
 
     @Override
-    public int[] update(List<Borrowing> borrowing) {
-        SqlParameterSource[] params = SqlParameterSourceUtils.createBatch(borrowing.toArray());
+    public int[] update(List<Borrowing> borrowings) {
+        SqlParameterSource[] params = new SqlParameterSource[borrowings.size()];
+
+        for (int i = 0; i < borrowings.size(); i++) {
+            BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(borrowings.get(i));
+            parameterSource.registerSqlType("status", Types.VARCHAR);
+            params[i] = parameterSource;
+        }
+
         return namedParameterJdbcTemplate.batchUpdate(UPDATE_BY_ID, params);}
 
     @Override
@@ -103,7 +115,7 @@ public class BorrowingDaoJdbc implements BorrowingDao {
 
         namedParameters.addValue("borrowId", borrowing.getBorrowId());
         namedParameters.addValue("status", borrowing.getStatus().name());
-        namedParameters.addValue("creatorID", borrowing.getCreatorId());
+        namedParameters.addValue("creatorId", borrowing.getCreatorId());
         namedParameters.addValue("bookIsbn", borrowing.getBookIsbn());
         namedParameters.addValue("creationDate", borrowing.getCreationDate());
 
