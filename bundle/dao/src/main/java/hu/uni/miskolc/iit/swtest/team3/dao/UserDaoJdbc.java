@@ -20,17 +20,14 @@ public class UserDaoJdbc implements UserDao {
     private static final String UPDATE_BY_ID = "UPDATE user SET userId=:userId, name=:name, email=:email, passwordHash=:passwordHash, librarian=:librarian WHERE userId=:userId";
     private static final String DELETE_BY_ID = "DELETE FROM user WHERE userId=:userId";
 
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final RowMapper<User> rowMapper;
 
     @Autowired
-    NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    final
-    RowMapper<User> rowMapper;
-
-    @Autowired
-    public UserDaoJdbc(RowMapper<User> rowMapper) {
+    public UserDaoJdbc(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate, RowMapper<User> rowMapper) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.rowMapper = rowMapper;
     }
 

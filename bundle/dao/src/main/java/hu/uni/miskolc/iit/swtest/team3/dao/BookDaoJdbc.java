@@ -21,17 +21,14 @@ public class BookDaoJdbc implements BookDao {
     private static final String UPDATE_BY_ID = "UPDATE book SET isbn=:isbn, author=:author, title=:title, description=:description, language=:language, availableCopies=:availableCopies WHERE isbn=:isbn";
     private static final String DELETE_BY_ID = "DELETE FROM book WHERE isbn=:isbn";
 
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final RowMapper<Book> rowMapper;
 
     @Autowired
-    NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    final
-    RowMapper<Book> rowMapper;
-
-    @Autowired
-    public BookDaoJdbc(RowMapper<Book> rowMapper) {
+    public BookDaoJdbc(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate, RowMapper<Book> rowMapper) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.rowMapper = rowMapper;
     }
 

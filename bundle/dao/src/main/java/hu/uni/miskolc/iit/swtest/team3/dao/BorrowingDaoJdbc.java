@@ -23,16 +23,14 @@ public class BorrowingDaoJdbc implements BorrowingDao {
     private static final String UPDATE_BY_ID = "UPDATE borrowings SET borrowId=:borrowId, status=:status, creatorId=:creatorId, bookIsbn=:bookIsbn, creationDate=:creationDate WHERE borrowId=:borrowId";
     private static final String DELETE_BY_ID = "DELETE FROM borrowings WHERE borrowId=:borrowId";
 
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final RowMapper<Borrowing> rowMapper;
 
     @Autowired
-    NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    final RowMapper<Borrowing> rowMapper;
-
-    @Autowired
-    public BorrowingDaoJdbc(RowMapper<Borrowing> rowMapper){
+    public BorrowingDaoJdbc(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate, RowMapper<Borrowing> rowMapper) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.rowMapper = rowMapper;
     }
 
