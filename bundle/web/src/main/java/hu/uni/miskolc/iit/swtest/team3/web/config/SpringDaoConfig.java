@@ -1,4 +1,4 @@
-package hu.uni.miskolc.iit.swtest.team3.dao.config;
+package hu.uni.miskolc.iit.swtest.team3.web.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
