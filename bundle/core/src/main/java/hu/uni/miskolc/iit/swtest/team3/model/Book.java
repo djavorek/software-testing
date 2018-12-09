@@ -2,6 +2,8 @@ package hu.uni.miskolc.iit.swtest.team3.model;
 
 import org.apache.commons.validator.routines.ISBNValidator;
 
+import java.util.Objects;
+
 public class Book {
 
     private static final ISBNValidator ISBN_VALIDATOR = ISBNValidator.getInstance();
@@ -78,5 +80,22 @@ public class Book {
         } else {
             throw new IllegalArgumentException("The number of available copies should be a positive number!");
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return Objects.equals(getIsbn(), book.getIsbn()) &&
+                Objects.equals(getAuthor(), book.getAuthor()) &&
+                Objects.equals(getTitle(), book.getTitle()) &&
+                Objects.equals(getDescription(), book.getDescription()) &&
+                Objects.equals(getLanguage(), book.getLanguage()) &&
+                getAvailableCopies() == book.getAvailableCopies();
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(getIsbn(), getAuthor(), getTitle(), getDescription(), getLanguage(), getAvailableCopies());
     }
 }
