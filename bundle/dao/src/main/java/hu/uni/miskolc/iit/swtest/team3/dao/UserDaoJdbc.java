@@ -16,7 +16,7 @@ public class UserDaoJdbc implements UserDao {
 
     private static final String SELECT = "SELECT * FROM user";
     private static final String SELECT_BY_ID = "SELECT * FROM user WHERE userId = :userId";
-    private static final String INSERT = "INSERT INTO user (name, email, passwordHash, librarian) values (:name, :email, :passwordHash, :librarian)";
+    private static final String INSERT = "INSERT INTO user (userId, name, email, passwordHash, librarian) values (:userId, :name, :email, :passwordHash, :librarian)";
     private static final String UPDATE_BY_ID = "UPDATE user SET userId=:userId, name=:name, email=:email, passwordHash=:passwordHash, librarian=:librarian WHERE userId=:userId";
     private static final String DELETE_BY_ID = "DELETE FROM user WHERE userId=:userId";
 
@@ -40,7 +40,7 @@ public class UserDaoJdbc implements UserDao {
     }
 
     @Override
-    public User read(String userId) {
+    public User read(int userId) {
         SqlParameterSource namedParameters = new MapSqlParameterSource().addValue("userId", userId);
         return namedParameterJdbcTemplate.queryForObject(SELECT_BY_ID, namedParameters, rowMapper);
     }
@@ -61,7 +61,7 @@ public class UserDaoJdbc implements UserDao {
     }
 
     @Override
-    public int delete(String userId) {
+    public int delete(int userId) {
         return namedParameterJdbcTemplate.update(DELETE_BY_ID, new MapSqlParameterSource().addValue("userId", userId));
     }
 

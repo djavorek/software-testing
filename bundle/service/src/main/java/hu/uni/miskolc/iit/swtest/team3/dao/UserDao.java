@@ -11,7 +11,7 @@ public interface UserDao {
     
     int create(User user);
     
-    User read(String userId);
+    User read(int userId);
 
     List<User> read();
 
@@ -19,6 +19,6 @@ public interface UserDao {
 
     int delete(User user);
 
-    int delete(String userId);
+    int delete(int userId);
 
 }
