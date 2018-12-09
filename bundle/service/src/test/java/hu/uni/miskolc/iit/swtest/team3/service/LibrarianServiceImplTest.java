@@ -15,6 +15,7 @@ import hu.uni.miskolc.iit.swtest.team3.model.exception.UnsuccessfulOperationExce
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.Assert;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.dao.DataAccessException;
 
@@ -176,19 +177,35 @@ public class LibrarianServiceImplTest {
 
     @Test
     public void testManageRequestsElseCase() {
-        int borrowId = testBorrowing.getBorrowId();
-        BorrowStatus newStatus = testBorrowing.getStatus();
-        Borrowing borrowingToUpdate = testBorrowingDao.read(borrowId);
-        BorrowStatus oldStatus = borrowingToUpdate.getStatus();
+        //We start from a Borrowing with REQUESTED status
+        Borrowing borrowingToUpdate = testBorrowing2;
+        Assert.assertEquals(borrowingToUpdate.getStatus(), BorrowStatus.REQUESTED);
 
-        borrowingToUpdate.setStatus(newStatus);
-        Book managedBook = testBookDao.read(borrowingToUpdate.getBookIsbn());
-        //testUpdateAvailableCopies(newStatus, managedBook);
-        testBorrowingDao.update(borrowingToUpdate);
-        testBookDao.update(managedBook);
-        when(testBorrowingDao.update(borrowingToUpdate)).thenReturn(testBorrowing);
+        //We need a Borrowing with BORROWED status
+        Borrowing expected = testBorrowing;
+        expected.setStatus(BorrowStatus.BORROWED);
 
-        librarianServiceImpl.manageRequest(testBorrowing);
+        //
+        testBook.setAvailableCopies(5);
+
+
+        when(testBorrowingDao.read(testBorrowing.getBorrowId())).thenReturn(borrowingToUpdate);
+        when(testBookDao.read(borrowingToUpdate.getBookIsbn())).thenReturn(testBook);
+
+        librarianServiceImpl.manageRequest(expected);
+
+        //borrowingToUpdate.setStatus(expected.getStatus());
+        //requestedBook.setAvailableCopies(requestedBook.getAvailableCopies() - 1);
+
+        ArgumentCaptor<Borrowing> borrowingArgumentCaptor = ArgumentCaptor.forClass(Borrowing.class);
+        ArgumentCaptor<Book> bookArgumentCaptor = ArgumentCaptor.forClass(Book.class);
+
+        verify(testBorrowingDao).update(borrowingArgumentCaptor.capture());
+        verify(testBookDao).update(bookArgumentCaptor.capture());
+
+        // Assert that every required action has been done
+        Assert.assertEquals(BorrowStatus.BORROWED, borrowingArgumentCaptor.getValue().getStatus());
+        Assert.assertEquals(4, bookArgumentCaptor.getValue().getAvailableCopies());
     }
 
     @Test(expected = IllegalStateException.class)
@@ -207,21 +224,18 @@ public class LibrarianServiceImplTest {
 
     @Test
     public void testIsValidStatusChange() {
-        BorrowStatus newStatusRequested = BorrowStatus.REQUESTED;
-        BorrowStatus newStatusBorrowed = BorrowStatus.BORROWED;
-        BorrowStatus newStatusReturned = BorrowStatus.RETURNED;
+        BorrowStatus requested = BorrowStatus.REQUESTED;
+        BorrowStatus borrowed = BorrowStatus.BORROWED;
+        BorrowStatus returned = BorrowStatus.RETURNED;
+        BorrowStatus nullStatus = null;
 
-        BorrowStatus oldStatusRequested = BorrowStatus.REQUESTED;
-        BorrowStatus oldStatusBorrowed = BorrowStatus.BORROWED;
-        BorrowStatus oldStatusReturned = BorrowStatus.RETURNED;
+        Assert.assertFalse(librarianServiceImpl.isValidStatusChange(requested, requested));
+        Assert.assertFalse(librarianServiceImpl.isValidStatusChange(borrowed, borrowed));
+        Assert.assertFalse(librarianServiceImpl.isValidStatusChange(returned, returned));
+        Assert.assertFalse(librarianServiceImpl.isValidStatusChange(nullStatus, returned));
 
-        BorrowStatus oldStatusFalse = null;
-
-        librarianServiceImpl.isValidStatusChange(oldStatusRequested, newStatusRequested);
-        librarianServiceImpl.isValidStatusChange(oldStatusBorrowed, newStatusBorrowed);
-        librarianServiceImpl.isValidStatusChange(oldStatusReturned, newStatusReturned);
-
-        librarianServiceImpl.isValidStatusChange(oldStatusFalse, newStatusReturned);
+        Assert.assertTrue(librarianServiceImpl.isValidStatusChange(requested, borrowed));
+        Assert.assertTrue(librarianServiceImpl.isValidStatusChange(borrowed, returned));
     }
 
     @Test
@@ -229,7 +243,14 @@ public class LibrarianServiceImplTest {
         BorrowStatus statusBorrowed = BorrowStatus.BORROWED;
         BorrowStatus statusReturned = BorrowStatus.RETURNED;
 
+        int availableCopiesBeforeUpdate = testBook.getAvailableCopies();
         librarianServiceImpl.updateAvailableCopies(statusBorrowed, testBook);
+        Assert.assertEquals(availableCopiesBeforeUpdate - 1, testBook.getAvailableCopies());
+
+        //Reset available copies to the original value
+        testBook.setAvailableCopies(availableCopiesBeforeUpdate);
+
         librarianServiceImpl.updateAvailableCopies(statusReturned, testBook);
+        Assert.assertEquals(availableCopiesBeforeUpdate + 1, testBook.getAvailableCopies());
     }
 }

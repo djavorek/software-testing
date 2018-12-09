@@ -114,7 +114,7 @@ public class LibrarianServiceImpl implements LibrarianService {
         }
     }
 
-    public boolean isValidStatusChange(BorrowStatus oldStatus, BorrowStatus newStatus) {
+    protected boolean isValidStatusChange(BorrowStatus oldStatus, BorrowStatus newStatus) {
         if (oldStatus != null && newStatus != null) {
             switch (oldStatus) {
                 case REQUESTED: {
@@ -133,16 +133,16 @@ public class LibrarianServiceImpl implements LibrarianService {
         return false;
     }
 
-    public void updateAvailableCopies(BorrowStatus newStatus, Book bookToManage) {
-        int availableCopiesBefore = bookToManage.getAvailableCopies();
+    protected void updateAvailableCopies(BorrowStatus newStatus, Book bookToManage) {
+        int availableCopies = bookToManage.getAvailableCopies();
 
         switch (newStatus) {
             case BORROWED: {
-                bookToManage.setAvailableCopies(availableCopiesBefore--);
+                bookToManage.setAvailableCopies(--availableCopies);
                 break;
             }
             case RETURNED: {
-                bookToManage.setAvailableCopies(availableCopiesBefore++);
+                bookToManage.setAvailableCopies(++availableCopies);
                 break;
             }
         }
