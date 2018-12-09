@@ -99,4 +99,5 @@ public class Book {
     public int hashCode() {
         return Objects.hash(getIsbn(), getAuthor(), getTitle(), getDescription(), getLanguage(), getAvailableCopies());
     }
+
 }

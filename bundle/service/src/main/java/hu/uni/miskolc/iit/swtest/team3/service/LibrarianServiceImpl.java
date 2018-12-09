@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
  *
  * @author tdavi
  */
-
 @Service
 public class LibrarianServiceImpl implements LibrarianService {
 
@@ -30,7 +29,7 @@ public class LibrarianServiceImpl implements LibrarianService {
         this.bookDao = bookDao;
         this.borrowingDao = borrowingDao;
     }
-    
+
     @Override
     public List<Book> listBooks() {
         try {
@@ -81,15 +80,15 @@ public class LibrarianServiceImpl implements LibrarianService {
             throw new UnsuccessfulOperationException("Could not get the list of borrowings!", exception);
         }
 
-        for(Borrowing borrowing : borrowings){
-            if(borrowing.getStatus() == BorrowStatus.REQUESTED){
+        for (Borrowing borrowing : borrowings) {
+            if (borrowing.getStatus() == BorrowStatus.REQUESTED) {
                 requestedBorrowings.add(borrowing);
             }
         }
 
         return requestedBorrowings;
     }
-        
+
     @Override
     public void manageRequest(Borrowing borrowing) {
         int borrowId = borrowing.getBorrowId();
@@ -101,12 +100,11 @@ public class LibrarianServiceImpl implements LibrarianService {
 
             if (!isValidStatusChange(oldStatus, newStatus)) {
                 throw new IllegalStateException("The requested status is invalid or already persists");
-            }
-            else {
+            } else {
                 borrowingToUpdate.setStatus(newStatus);
 
                 Book managedBook = bookDao.read(borrowingToUpdate.getBookIsbn());
-                updateAvailableCopies(oldStatus, newStatus, managedBook);
+                updateAvailableCopies(newStatus, managedBook);
 
                 borrowingDao.update(borrowingToUpdate);
                 bookDao.update(managedBook);
@@ -116,33 +114,35 @@ public class LibrarianServiceImpl implements LibrarianService {
         }
     }
 
-    private boolean isValidStatusChange(BorrowStatus oldStatus, BorrowStatus newStatus) {
-        switch(oldStatus) {
-            case REQUESTED: {
-                if(newStatus == BorrowStatus.BORROWED) return true;
-                else return false;
-            }
-            case BORROWED: {
-                if(newStatus == BorrowStatus.RETURNED) return true;
-                else return false;
-            }
-            case RETURNED: {
-                return false;
+    protected boolean isValidStatusChange(BorrowStatus oldStatus, BorrowStatus newStatus) {
+        if (oldStatus != null && newStatus != null) {
+            switch (oldStatus) {
+                case REQUESTED: {
+                    if (newStatus == BorrowStatus.BORROWED) return true;
+                    else return false;
+                }
+                case BORROWED: {
+                    if (newStatus == BorrowStatus.RETURNED) return true;
+                    else return false;
+                }
+                case RETURNED: {
+                    return false;
+                }
             }
         }
         return false;
     }
 
-    private void updateAvailableCopies(BorrowStatus oldStatus, BorrowStatus newStatus, Book bookToManage) {
-        int availableCopiesBefore = bookToManage.getAvailableCopies();
+    protected void updateAvailableCopies(BorrowStatus newStatus, Book bookToManage) {
+        int availableCopies = bookToManage.getAvailableCopies();
 
-        switch(newStatus) {
+        switch (newStatus) {
             case BORROWED: {
-                bookToManage.setAvailableCopies(availableCopiesBefore--);
+                bookToManage.setAvailableCopies(--availableCopies);
                 break;
             }
             case RETURNED: {
-                bookToManage.setAvailableCopies(availableCopiesBefore++);
+                bookToManage.setAvailableCopies(++availableCopies);
                 break;
             }
         }

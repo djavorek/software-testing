@@ -55,7 +55,7 @@ public class ReaderServiceImpl implements ReaderService {
                 borrowingDao.create(borrowingToCreate);
             }
         } catch(DataAccessException exception) {
-            throw new UnsuccessfulOperationException("Book request cannot be created!");
+            throw new UnsuccessfulOperationException("Book request cannot be created!", exception);
         }
     }
 
@@ -69,7 +69,7 @@ public class ReaderServiceImpl implements ReaderService {
             else return Boolean.FALSE;
         }
         catch (DataAccessException exception){
-            throw new UnsuccessfulOperationException("Could not check the availability of the book!");
+            throw new UnsuccessfulOperationException("Could not check the availability of the book!", exception);
         }
     }
 }

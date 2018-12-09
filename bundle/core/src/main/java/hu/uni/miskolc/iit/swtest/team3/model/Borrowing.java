@@ -81,7 +81,6 @@ public class Borrowing {
                 getCreationDate().get(Calendar.YEAR) == borrowing.getCreationDate().get(Calendar.YEAR) &&
                 getCreationDate().get(Calendar.DAY_OF_YEAR) == borrowing.getCreationDate().get(Calendar.DAY_OF_YEAR);
     }
-
     @Override
     public int hashCode() {
         return Objects.hash(getBorrowId(), getStatus(), getCreatorId(), getBookIsbn(), getCreationDate());
