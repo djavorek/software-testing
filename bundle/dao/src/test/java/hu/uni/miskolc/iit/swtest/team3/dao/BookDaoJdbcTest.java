@@ -79,4 +79,44 @@ public class BookDaoJdbcTest {
         Assert.assertEquals(0, bookDao.update(new Book("111-11-1111-1","Foo", "Bar", "Baz", "Qux", 0)));
         Assert.assertEquals(0, bookDao.delete("111-11-1111-1"));
     }
+
+    @Test(expected = org.springframework.dao.DuplicateKeyException.class)
+    public void insertExistingPrimaryKey() {
+        Book book = getExistingBook();
+        bookDao.create(book);
+    }
+
+    @Test(expected = org.springframework.dao.DataIntegrityViolationException.class)
+    public void createWithNull() {
+        Book book = getExistingBook();
+        book.setTitle(null);
+        bookDao.create(book);
+    }
+
+    @Test(expected = org.springframework.dao.DataIntegrityViolationException.class)
+    public void updateWithNull() {
+        Book book = getExistingBook();
+        book.setTitle(null);
+        bookDao.update(book);
+    }
+
+    @Test
+    public void updateNotExisting() {
+        Book book = getNotExistingBook();
+        int affectedRows = bookDao.update(book);
+        Assert.assertEquals(affectedRows, 0);
+    }
+
+    @Test(expected = org.springframework.dao.EmptyResultDataAccessException.class)
+    public void readNotExisting() {
+        bookDao.read(getNotExistingBook().getIsbn());
+    }
+
+    private Book getExistingBook() {
+        return new Book("0345391802", "Douglas Adams", "The Hitchhikers Guide to the Galaxy", "description", "English", 42);
+    }
+
+    private Book getNotExistingBook() {
+        return new Book("9781617294945", "Craig Walls", "Spring in Action, Fifth Edition", "This new edition includes all Spring 5.0 updates, along with new examples on reactive programming, Spring WebFlux, and microservices.", "English", 0);
+    }
 }
