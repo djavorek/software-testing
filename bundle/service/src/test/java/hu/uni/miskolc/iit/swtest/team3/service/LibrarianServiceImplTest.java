@@ -174,6 +174,23 @@ public class LibrarianServiceImplTest {
         librarianServiceImpl.listRequests();
     }
 
+    @Test
+    public void testManageRequestsElseCase() {
+        int borrowId = testBorrowing.getBorrowId();
+        BorrowStatus newStatus = testBorrowing.getStatus();
+        Borrowing borrowingToUpdate = testBorrowingDao.read(borrowId);
+        BorrowStatus oldStatus = borrowingToUpdate.getStatus();
+
+        borrowingToUpdate.setStatus(newStatus);
+        Book managedBook = testBookDao.read(borrowingToUpdate.getBookIsbn());
+        //testUpdateAvailableCopies(newStatus, managedBook);
+        testBorrowingDao.update(borrowingToUpdate);
+        testBookDao.update(managedBook);
+        when(testBorrowingDao.update(borrowingToUpdate)).thenReturn(testBorrowing);
+
+        librarianServiceImpl.manageRequest(testBorrowing);
+    }
+
     @Test(expected = IllegalStateException.class)
     public void testManageRequestsIllegalException() {
         when(testBorrowingDao.read(testBorrowing.getBorrowId())).thenReturn(testBorrowing);
