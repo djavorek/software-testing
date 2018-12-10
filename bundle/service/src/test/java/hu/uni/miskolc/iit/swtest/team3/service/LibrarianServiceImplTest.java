@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import hu.uni.miskolc.iit.swtest.team3.model.exception.NoAvailableCopiesException;
 import hu.uni.miskolc.iit.swtest.team3.model.exception.UnsuccessfulOperationException;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,9 +17,6 @@ import org.junit.Assert;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.dao.DataAccessException;
-
-import javax.naming.InitialContext;
-import javax.xml.crypto.Data;
 
 import static org.mockito.Mockito.*;
 
@@ -121,8 +117,6 @@ public class LibrarianServiceImplTest {
 
     @Test
     public void testAddBook() {
-        doReturn(testBookList.add(newBook)).when(testBookDao).create(newBook);
-
         librarianServiceImpl.addBook(newBook);
         verify(testBookDao).create(newBook);
     }
@@ -137,11 +131,53 @@ public class LibrarianServiceImplTest {
     }
 
     @Test
-    public void testAddBookInstance() {
+    public void testManageBookInstances() {
+        int initialNumberOfCopies = testBook.getAvailableCopies();
+
         when(testBookDao.read(testBook.getIsbn())).thenReturn(testBook);
+
+        ArgumentCaptor<Book> bookArgumentCaptor = ArgumentCaptor.forClass(Book.class);
+
+        //Increment the number of copies by any number
+        testBook.setAvailableCopies(initialNumberOfCopies + 33);
+
+        librarianServiceImpl.manageBookInstances(testBook);
+        verify(testBookDao).read(testBook.getIsbn());
+        verify(testBookDao).update(bookArgumentCaptor.capture());
+
+        Assert.assertEquals(initialNumberOfCopies + 33, bookArgumentCaptor.getValue().getAvailableCopies());
+    }
+
+    @Test
+    public void testManageBookInstancesException() {
+        Mockito.when(testBookDao.read(testBook.getIsbn())).thenReturn(testBook);
+        Mockito.when(testBookDao.update(testBook)).thenThrow(Mockito.mock(DataAccessException.class));
+
+        //This way you can check every aspects of the thrown exception (I'm aware I could use @Rule as well)
+        try {
+            librarianServiceImpl.addBookInstance(testBook);
+            Assert.fail("UnsuccessfulOperationException should be thrown");
+        } catch (UnsuccessfulOperationException exception) {
+            Assert.assertEquals("Could not modify the number of book instances!", exception.getMessage());
+        }
+
+        verify(testBookDao).read(testBook.getIsbn());
+        verify(testBookDao).update(testBook);
+    }
+
+    @Test
+    public void testAddBookInstance() {
+        int initialNumberOfCopies = testBook.getAvailableCopies();
+
+        when(testBookDao.read(testBook.getIsbn())).thenReturn(testBook);
+
+        ArgumentCaptor<Book> bookArgumentCaptor = ArgumentCaptor.forClass(Book.class);
 
         librarianServiceImpl.addBookInstance(testBook);
         verify(testBookDao).read(testBook.getIsbn());
+        verify(testBookDao).update(bookArgumentCaptor.capture());
+
+        Assert.assertEquals(initialNumberOfCopies + 1, bookArgumentCaptor.getValue().getAvailableCopies());
     }
 
     @Test(expected = UnsuccessfulOperationException.class)

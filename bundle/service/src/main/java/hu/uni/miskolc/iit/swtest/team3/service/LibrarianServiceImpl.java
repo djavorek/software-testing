@@ -58,15 +58,21 @@ public class LibrarianServiceImpl implements LibrarianService {
     }
 
     @Override
-    public void addBookInstance(Book book) {
+    public void manageBookInstances(Book book) {
         String isbn = book.getIsbn();
         try {
             Book bookToUpdate = bookDao.read(isbn);
-            bookToUpdate.setAvailableCopies(bookToUpdate.getAvailableCopies() + 1);
+            bookToUpdate.setAvailableCopies(book.getAvailableCopies());
             bookDao.update(bookToUpdate);
         } catch (DataAccessException | IllegalArgumentException exception) {
-            throw new UnsuccessfulOperationException("Could not add book instance!", exception);
+            throw new UnsuccessfulOperationException("Could not modify the number of book instances!", exception);
         }
+    }
+
+    @Override
+    public void addBookInstance(Book book) {
+        book.setAvailableCopies(book.getAvailableCopies() + 1);
+        manageBookInstances(book);
     }
 
     @Override
