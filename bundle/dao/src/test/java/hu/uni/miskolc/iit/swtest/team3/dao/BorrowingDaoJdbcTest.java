@@ -94,7 +94,7 @@ public class BorrowingDaoJdbcTest {
 
     @Test
     public void notSetBorrowIdTest() {
-        Borrowing testBorrowing = new Borrowing(BorrowStatus.REQUESTED, 2, "0345391802", new GregorianCalendar());
+        Borrowing testBorrowing = new Borrowing(BorrowStatus.REQUESTED, 2, "0345391802", new GregorianCalendar(2015,4,1));
         borrowingDao.create(testBorrowing);
 
         List<Borrowing> borrowingsInDB = borrowingDao.read();

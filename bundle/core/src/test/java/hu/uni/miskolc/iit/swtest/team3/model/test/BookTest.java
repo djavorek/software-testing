@@ -1,6 +1,9 @@
 package hu.uni.miskolc.iit.swtest.team3.model.test;
 
 import hu.uni.miskolc.iit.swtest.team3.model.Book;
+import hu.uni.miskolc.iit.swtest.team3.model.Borrowing;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -54,5 +57,12 @@ public class BookTest {
     public void setIsbnTest(){
         Book book = new Book();
         book.setIsbn(null);
+    }
+
+    @Test
+    public void equalsContractTest() {
+        EqualsVerifier.forClass(Book.class)
+                .suppress(Warning.NONFINAL_FIELDS)
+                .verify();
     }
 }

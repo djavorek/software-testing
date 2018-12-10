@@ -83,21 +83,20 @@ public class Book {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Book)) return false;
         Book book = (Book) o;
-        return Objects.equals(getIsbn(), book.getIsbn()) &&
+        return getAvailableCopies() == book.getAvailableCopies() &&
+                Objects.equals(getIsbn(), book.getIsbn()) &&
                 Objects.equals(getAuthor(), book.getAuthor()) &&
                 Objects.equals(getTitle(), book.getTitle()) &&
                 Objects.equals(getDescription(), book.getDescription()) &&
-                Objects.equals(getLanguage(), book.getLanguage()) &&
-                getAvailableCopies() == book.getAvailableCopies();
+                Objects.equals(getLanguage(), book.getLanguage());
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return Objects.hash(getIsbn(), getAuthor(), getTitle(), getDescription(), getLanguage(), getAvailableCopies());
     }
-
 }

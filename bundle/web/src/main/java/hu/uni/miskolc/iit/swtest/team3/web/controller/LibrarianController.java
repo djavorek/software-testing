@@ -31,6 +31,11 @@ public class LibrarianController {
         librarianService.addBook(book);
     }
 
+    @PostMapping("manageBookInstances")
+    public void manageBookInstances(@RequestBody Book book) {
+        librarianService.manageBookInstances(book);
+    }
+
     @PostMapping("acquireBookInstance")
     public void addBookInstance(@RequestBody Book book) {
         librarianService.addBookInstance(book);

@@ -13,6 +13,7 @@ public interface LibrarianService {
     List<Book> listBooks();
     List<Borrowing> listBorrowings();
     void addBook(Book book);
+    void manageBookInstances(Book book);
     void addBookInstance(Book book);
     List<Borrowing> listRequests();
     void manageRequest(Borrowing borrowing);

@@ -1,6 +1,8 @@
 package hu.uni.miskolc.iit.swtest.team3.model.test;
 
 import hu.uni.miskolc.iit.swtest.team3.model.User;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -69,5 +71,12 @@ public class UserTest {
     public void setEmailTest(){
         User user = new User();
         user.setEmail(null);
+    }
+
+    @Test
+    public void equalsContractTest() {
+        EqualsVerifier.forClass(User.class)
+                .suppress(Warning.NONFINAL_FIELDS)
+                .verify();
     }
 }
