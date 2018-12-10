@@ -70,19 +70,19 @@ public class Borrowing {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Borrowing)) return false;
         Borrowing borrowing = (Borrowing) o;
-        return  getBorrowId() == borrowing.getBorrowId() &&
+        return getBorrowId() == borrowing.getBorrowId() &&
                 getCreatorId() == borrowing.getCreatorId() &&
                 getStatus() == borrowing.getStatus() &&
                 Objects.equals(getBookIsbn(), borrowing.getBookIsbn()) &&
-                getCreationDate().get(Calendar.YEAR) == borrowing.getCreationDate().get(Calendar.YEAR) &&
-                getCreationDate().get(Calendar.DAY_OF_YEAR) == borrowing.getCreationDate().get(Calendar.DAY_OF_YEAR);
+                Objects.equals(getCreationDate(), borrowing.getCreationDate());
     }
+
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return Objects.hash(getBorrowId(), getStatus(), getCreatorId(), getBookIsbn(), getCreationDate());
     }
 }

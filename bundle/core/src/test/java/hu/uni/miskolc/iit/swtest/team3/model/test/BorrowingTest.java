@@ -2,6 +2,9 @@ package hu.uni.miskolc.iit.swtest.team3.model.test;
 
 import hu.uni.miskolc.iit.swtest.team3.model.BorrowStatus;
 import hu.uni.miskolc.iit.swtest.team3.model.Borrowing;
+import hu.uni.miskolc.iit.swtest.team3.model.User;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -64,5 +67,12 @@ public class BorrowingTest {
         Assert.assertEquals(TEST_CREATORID, borrowingToTest.getCreatorId());
         Assert.assertEquals(TEST_BOOKISBN, borrowingToTest.getBookIsbn());
         Assert.assertEquals(TEST_CREATIONDATE, borrowingToTest.getCreationDate());
+    }
+
+    @Test
+    public void equalsContractTest() {
+        EqualsVerifier.forClass(Borrowing.class)
+                .suppress(Warning.NONFINAL_FIELDS)
+                .verify();
     }
 }
